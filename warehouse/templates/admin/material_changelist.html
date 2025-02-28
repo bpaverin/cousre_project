@@ -1,0 +1,99 @@
+{% extends "admin/change_list.html" %}
+{% load i18n %}
+
+{% block content %}
+<div style="padding: 20px;">
+    <div style="display: flex; flex-wrap: wrap; gap: 20px; margin-bottom: 20px;">
+        <!-- Круговая диаграмма распределения по категориям -->
+        <div style="flex: 1; min-width: 400px;">
+            <h2>Распределение материалов по категориям</h2>
+            <canvas id="categoryPieChart"></canvas>
+        </div>
+        
+        <!-- Столбчатая диаграмма топ-10 материалов -->
+        <div style="flex: 1; min-width: 400px;">
+            <h2>Топ-10 материалов по количеству</h2>
+            <canvas id="topMaterialsChart"></canvas>
+        </div>
+    </div>
+</div>
+
+{{ block.super }}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const pieData = {{ pie_data|safe }};
+    const barData = {{ bar_data|safe }};
+
+    // Круговая диаграмма
+    new Chart(document.getElementById('categoryPieChart').getContext('2d'), {
+        type: 'pie',
+        data: {
+            labels: pieData.labels,
+            datasets: [{
+                data: pieData.data,
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.8)',
+                    'rgba(54, 162, 235, 0.8)',
+                    'rgba(255, 206, 86, 0.8)',
+                    'rgba(75, 192, 192, 0.8)',
+                    'rgba(153, 102, 255, 0.8)',
+                    'rgba(255, 159, 64, 0.8)'
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'right'
+                },
+                title: {
+                    display: true,
+                    text: 'Распределение материалов по категориям'
+                }
+            }
+        }
+    });
+
+    // Столбчатая диаграмма
+    new Chart(document.getElementById('topMaterialsChart').getContext('2d'), {
+        type: 'bar',
+        data: {
+            labels: barData.labels,
+            datasets: [{
+                label: 'Количество',
+                data: barData.data,
+                backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                borderColor: 'rgb(54, 162, 235)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Количество'
+                    }
+                }
+            },
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const index = context.dataIndex;
+                            const unit = barData.units[index];
+                            return `${context.formattedValue} ${unit}`;
+                        }
+                    }
+                }
+            }
+        }
+    });
+});
+</script>
+{% endblock %} 

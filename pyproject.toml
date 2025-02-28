@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "course-project"
+version = "0.1.0"
+description = ""
+authors = ["paverin-b <paverin-b@protei-lab.ru>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+django = "^5.1.4"
+pytest = "^8.3.4"
+pytest-django = "^4.10.0"
+pytest-cov = "^6.0.0"
+selenium = "^4.29.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
